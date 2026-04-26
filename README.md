@@ -1,8 +1,8 @@
 ﻿# Table of contents
  
-1. [Quick start]
-2. [Features and limitations]
-3. [Examples]
+1. [Quick start](#quick-start)
+2. [Features and limitations](#features-and-limitations)
+3. [Examples](#examples)
 
 # Quick start
 
