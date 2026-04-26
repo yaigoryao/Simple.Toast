@@ -1,4 +1,9 @@
 <Solution>
-  <Project Path="Simple.TestApp/Simple.TestApp.csproj" />
+  <Folder Name="/Элементы решения/">
+    <File Path="LICENSE.txt" />
+  </Folder>
+  <Project Path="Simple.TestApp/Simple.TestApp.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
   <Project Path="Simple.Toast/Simple.Toast.csproj" />
 </Solution>
