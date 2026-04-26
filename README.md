@@ -6,7 +6,7 @@
 
 # Quick start
 1. Download package [![NuGet Stable](https://img.shields.io/nuget/v/Simple.Toast)](https://www.nuget.org/packages/Simple.Toast)
-1. Register `simple` xml namespace in page:
+2. Register `simple` xml namespace in page:
 ```xaml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -14,7 +14,7 @@
              xmlns:simple="clr-namespace:Simple.Toast;assembly=Simple.Toast"> <!-- Add namespace -->
 ```
 
-1. Add toast component to top-level page container:
+3. Add toast component to top-level page container:
 ```xaml
     <Grid RowDefinitions="*"
           ColumnDefinitions="*">
@@ -47,7 +47,7 @@
     </Grid>
 ```
 
-1. Add observable properties and bind them to `Show` and `Dismiss` toast properties:
+4. Add observable properties and bind them to `Show` and `Dismiss` toast properties:
 ```csharp
 public partial class MainPageVM : ObservableObject
 {  
@@ -61,7 +61,7 @@ public partial class MainPageVM : ObservableObject
 }
 ```
 
-1. Show configured toast or dismiss it in viewmodel:
+5. Show configured toast or dismiss it in viewmodel:
 ```csharp
 public partial class MainPageVM : ObservableObject
 {  
