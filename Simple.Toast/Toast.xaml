@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Simple.Toast.Toast"
+             xmlns:toast="clr-namespace:Simple.Toast"
+             x:DataType="toast:Toast"
+             x:Name="this">
+    <Border x:Name="MainBorder"
+            BindingContext="{Binding Source={x:Reference this}}"
+            HorizontalOptions="{Binding ToastHorizontalOptions, FallbackValue={x:Static LayoutOptions.Center}}"
+            VerticalOptions="{Binding ToastVerticalOptions, FallbackValue={x:Static LayoutOptions.Start}}"
+            BackgroundColor="{Binding ToastBackgroundColor, FallbackValue={x:Static Colors.Red}}"
+            Padding="{Binding ToastPadding, FallbackValue=10}"
+            Stroke="{Binding BorderBrush, FallbackValue={x:Static Colors.Transparent}}"
+            StrokeThickness="{Binding BorderThickness, FallbackValue=0}">
+        <Grid RowDefinitions="*,Auto"
+              ColumnDefinitions="*"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill">
+            <Grid.Children>
+                <ContentView Grid.Row="0"
+                             Content="{Binding InnerContent}" />
+                <Border x:Name="ProgressBar"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        VerticalOptions="End"
+                        HorizontalOptions="Fill"
+                        HeightRequest="{Binding ProgressBarHeight, FallbackValue=3}"
+                        BackgroundColor="{Binding ProgressBarColor, FallbackValue={x:Static Colors.Wheat}}"
+                        IsVisible="{Binding IsProgressBarEnabled, FallbackValue=True}" />
+            </Grid.Children>
+        </Grid>
+    </Border>
+</ContentView>
