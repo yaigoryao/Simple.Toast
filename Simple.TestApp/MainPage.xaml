@@ -7,19 +7,24 @@
              x:DataType="local:MainPageVM">
     <Grid RowDefinitions="*"
           ColumnDefinitions="*">
-        
-        <simple:Toast DismissDelay="15000"
-                      ToastBackgroundColor="#2E7D32"
+
+                    <!--DismissDelay: toast dismiss delay, MS
+                    Show: boolean property, showing toast when true
+                    Dismiss: boolean property, closing toast when true
+                    ToastDirection: enumerable property, switches toast appearance direction
+                    Important: set ZIndex property value-->
+        <simple:Toast DismissDelay="2000" 
+                      ToastBackgroundColor="#2E7D32" 
                       CornerRadius="12"
                       ToastPadding="16,12"
                       ProgressBarColor="#81C784"
-                      Show="{Binding Show}"
-                      Dismiss="{Binding Cancel}"
+                      Show="{Binding Show}" 
+                      Dismiss="{Binding Dismiss}"
                       ToastDirection="LeftToRight"
                       VerticalOptions="Start"
                       HorizontalOptions="Center"
                       ZIndex="5">
-            <simple:Toast.InnerContent>
+            <simple:Toast.InnerContent> <!--Toast inner content-->
                 <Label Text="✓ Operation completed successfully!"
                        TextColor="White"
                        FontSize="16"

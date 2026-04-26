@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 namespace Simple.TestApp
 {
     public partial class MainPageVM : ObservableObject
-    {
-        [ObservableProperty]
-        private string _text = "Notification";
-        
+    {  
         [ObservableProperty]
         private bool _show = false;
 
         [ObservableProperty]
-        private bool _cancel = false;
+        private bool _dismiss = false;
 
         [RelayCommand]
         public void ShowNotification()
@@ -28,7 +25,7 @@ namespace Simple.TestApp
         [RelayCommand]
         public void CancelNotification()
         {
-            Cancel = true;
+            Dismiss = true;
         }
     }
 }
