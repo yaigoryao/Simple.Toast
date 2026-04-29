@@ -3,6 +3,7 @@
 1. [Quick start](#quick-start)
 1. [Features and limitations](#features-and-limitations)
 1. [Examples](#examples)
+1. [Changes](#changes)
 
 # Quick start
 1. Download package [![NuGet Stable](https://img.shields.io/nuget/v/Simple.Toast)](https://www.nuget.org/packages/Simple.Toast)
@@ -33,6 +34,7 @@
                       ToastDirection="LeftToRight"
                       VerticalOptions="Start"
                       HorizontalOptions="Center"
+                      ProgressBarDirection="Center"
                       ZIndex="5">
             <simple:Toast.InnerContent> <!--Toast inner content-->
                 <Label Text="✓ Operation completed successfully!"
@@ -95,13 +97,14 @@ public partial class MainPageVM : ObservableObject
 * Setting `Show = true` multiple times resets running toast animations.
 
 ### Dismiss
- 
+> [!IMPORTANT]
+> `Dismiss` property **must** be bound with `TwoWay` binding mode. This behavior is enabled by default. Any other binding modes would cause bugs. Consider not changing `Dismiss` binding mode.
 * `Dismiss` property is similar to `Show`: setting `Dismiss = true` hides toast; it automatically resets to `false` when set to `true`; one may use `Dismiss = true` multiple times.
 
 ### ToastDirection
 
 `ToastDirection` property supports 4 toast appearance directions:
-* TopToDown
+* TopToDown (default)
 * LeftToRight
 * DownToTop
 * RightToLeft
@@ -116,6 +119,15 @@ Boolean property, that enables or disables toast dismiss progress bar visibility
 ### DismissDelay
 
 Integer property, toast dismiss delay in milliseconds.
+
+### ProgressBarDirection
+
+`ProgressBarDirection` is a enum property, supporting following 3 values:
+* Center (default)
+* Left
+* Right
+
+This property is used to specify progress bar move direction.
 
 # Examples
 
@@ -219,3 +231,9 @@ Integer property, toast dismiss delay in milliseconds.
     </simple:Toast.InnerContent>
 </simple:Toast>
 ```
+
+# Changes
+
+## version 1.1.0
+
+* ProgressBarDirection property was added.
