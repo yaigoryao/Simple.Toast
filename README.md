@@ -90,7 +90,6 @@ public partial class MainPageVM : ObservableObject
 
 ### Show
 > [!IMPORTANT]
-
 > `Show` property **must** be bound with `TwoWay` binding mode. This behavior is enabled by default. Any other binding modes would cause bugs. Consider not changing `Show` binding mode.
 * `Show` property automatically resets to `false` value when changed to `true`. Thus, one may use `Show = true` to show toast multiple times.
 * Setting `Show = true` multiple times resets running toast animations.
@@ -108,7 +107,6 @@ public partial class MainPageVM : ObservableObject
 * RightToLeft
 
 > [!IMPORTANT]
-
 > Important side-effect of setting `ToastDirection` value is that when `TopToDown` and `DownToTop` values are set, `VerticalOptions` property **is ignored**, as well as `LeftToRight` or `RightToLeft` cause `HorizontalOptions` value to be ignored.
 
 ### IsProgressBarEnabled
