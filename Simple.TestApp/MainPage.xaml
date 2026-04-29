@@ -13,7 +13,7 @@
                     Dismiss: boolean property, closing toast when true
                     ToastDirection: enumerable property, switches toast appearance direction
                     Important: set ZIndex property value-->
-        <simple:Toast DismissDelay="2000" 
+        <simple:Toast DismissDelay="3000" 
                       ToastBackgroundColor="#2E7D32" 
                       CornerRadius="12"
                       ToastPadding="16,12"
@@ -23,7 +23,8 @@
                       ToastDirection="LeftToRight"
                       VerticalOptions="Start"
                       HorizontalOptions="Center"
-                      ZIndex="5">
+                      ZIndex="5"
+                      ProgressBarDirection="Center">
             <simple:Toast.InnerContent> <!--Toast inner content-->
                 <Label Text="✓ Operation completed successfully!"
                        TextColor="White"

@@ -9,6 +9,13 @@ namespace Simple.Toast;
 //[ContentProperty(nameof(InnerContent))]
 public partial class Toast : ContentView
 {
+    public enum ProgressBarDirections
+    {
+        Center = 1,
+        Left = 2,
+        Right = 3
+    }
+
     public enum Direction
     {
         TopToDown = 1,
@@ -189,7 +196,41 @@ public partial class Toast : ContentView
             toast.SetInitialState(dir, false);
         }
     }
-        
+
+    public static readonly BindableProperty ProgressBarDirectionProperty = BindableProperty.Create(nameof(ProgressBarDirection), typeof(ProgressBarDirections), typeof(Toast), ProgressBarDirections.Center, propertyChanged: OnProgressBarDirectionPropertyChanged);
+
+    private static void OnProgressBarDirectionPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is Toast toast && newValue is ProgressBarDirections dir)
+        {
+            toast.SetProgressBarMoveDirection(dir);
+        }
+    }
+
+    public ProgressBarDirections ProgressBarDirection
+    {
+        get => (ProgressBarDirections)GetValue(ProgressBarDirectionProperty);
+        set => SetValue(ProgressBarDirectionProperty, value);
+    }
+
+    private void SetProgressBarMoveDirection(ProgressBarDirections direction)
+    {
+        double anchorX = 0.5;
+        switch (direction)
+        {
+            case ProgressBarDirections.Left:
+                anchorX = 0.0;
+                break;
+            case ProgressBarDirections.Right:
+                anchorX = 1.0;
+                break;
+            case ProgressBarDirections.Center:
+            default:
+                break;
+        }
+        ProgressBar.AnchorX = anchorX;
+    }
+
     private CancellationTokenSource? _cts = null;
 
     private Size CurrentSize { get => this.ComputeDesiredSize(double.PositiveInfinity, double.PositiveInfinity); }
