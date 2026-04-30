@@ -1,4 +1,4 @@
-name: Nuget deploy on main push
+name: Nuget push on main push
 
 on:
   push:
@@ -14,6 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install MAUI workloads
+        run: |
+          dotnet workload install ios
+          dotnet workload install maccatalyst
+          dotnet workload install maui
+      
       - name: Get latest NuGet version
         id: get-latest-version
         shell: pwsh
