@@ -237,3 +237,4 @@ This property is used to specify progress bar move direction.
 ## version 1.1.0
 
 * ProgressBarDirection property was added.
+* Updated documentation.
