@@ -1,9 +1,12 @@
-name: Nuget push on main push
+name: Nuget deploy on main push
 
 on:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -15,16 +18,18 @@ jobs:
         id: get-latest-version
         shell: pwsh
         run: |
-          $repoName = '${{ github.event.repository.name }}'
-          $url = "https://api.nuget.org/v3-flatcontainer/$repoName/index.json"
+          $queryUrl = "https://azuresearch-usnc.nuget.org/query?q=packageid:Simple.Toast&prerelease=true&semVerLevel=2.0.0"
           try {
-            $response = Invoke-RestMethod -Uri $url -ErrorAction Stop
+            $response = Invoke-RestMethod -Uri $queryUrl -ErrorAction Stop
+            if ($response.totalHits -gt 0) {
+              $latest = $response.data[0].version
+            } else {
+              $latest = "0.0.0"
+            }
           } catch {
-            Write-Error "Failed to fetch NuGet versions: $_"
+            Write-Error "Failed to query NuGet Search API: $_"
             exit 1
           }
-          # Если versions отсутствует (пакет ещё не публиковался) — это допустимо
-          $latest = if ($response.versions) { $response.versions[-1] } else { "0.0.0" }
           echo "latest=$latest" >> $env:GITHUB_OUTPUT
 
       - name: Get current version from .csproj
@@ -47,11 +52,12 @@ jobs:
 
       - name: Compare versions
         id: compare-versions
+        env:
+          LATEST: ${{ steps.get-latest-version.outputs.latest }}
+          CURRENT: ${{ steps.get-current-version.outputs.current }}
         shell: pwsh
         run: |
-          $latest = '${{ steps.get-latest-version.outputs.latest }}'
-          $current = '${{ steps.get-current-version.outputs.current }}'
-          $update = $latest -ne $current
+          $update = $env:LATEST -ne $env:CURRENT
           $updateStr = $update.ToString().ToLower()
           echo "update=$updateStr" >> $env:GITHUB_OUTPUT
 
