@@ -81,5 +81,12 @@ jobs:
         if: steps.compare-versions.outputs.update == 'true'
         env:
           NUGET_KEY: ${{ secrets.SIMPLE_TOAST_KEY }}
-        run: dotnet nuget push output/*.nupkg --api-key $env:NUGET_KEY --source https://api.nuget.org/v3/index.json
+        shell: pwsh
+        run: |
+          $package = Get-ChildItem output/*.nupkg | Select-Object -First 1
+          if (-not $package) {
+            Write-Error "No .nupkg file found in output/"
+            exit 1
+          }
+          dotnet nuget push $package.FullName --api-key $env:NUGET_KEY --source https://api.nuget.org/v3/index.json
         working-directory: ./Simple.Toast
