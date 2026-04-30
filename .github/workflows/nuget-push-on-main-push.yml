@@ -1,0 +1,68 @@
+name: Nuget push on main push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest NuGet version
+        id: get-latest-version
+        shell: pwsh
+        run: |
+          $repoName = '${{ github.event.repository.name }}'
+          $url = "https://api.nuget.org/v3-flatcontainer/$repoName/index.json"
+          try {
+            $response = Invoke-RestMethod -Uri $url -ErrorAction Stop
+          } catch {
+            Write-Error "Failed to fetch NuGet versions: $_"
+            exit 1
+          }
+          # Если versions отсутствует (пакет ещё не публиковался) — это допустимо
+          $latest = if ($response.versions) { $response.versions[-1] } else { "0.0.0" }
+          echo "latest=$latest" >> $env:GITHUB_OUTPUT
+
+      - name: Get current version from .csproj
+        id: get-current-version
+        shell: pwsh
+        run: |
+          $csprojPath = './Simple.Toast/Simple.Toast.csproj'
+          if (-not (Test-Path $csprojPath)) {
+            Write-Error "File not found: $csprojPath"
+            exit 1
+          }
+          [xml]$csproj = Get-Content $csprojPath
+          $current = $csproj.Project.PropertyGroup.Version
+          if (-not $current) { $current = $csproj.Project.PropertyGroup.VersionPrefix }
+          if (-not $current) {
+            Write-Error "Version tag not found in .csproj"
+            exit 1
+          }
+          echo "current=$current" >> $env:GITHUB_OUTPUT
+
+      - name: Compare versions
+        id: compare-versions
+        shell: pwsh
+        run: |
+          $latest = '${{ steps.get-latest-version.outputs.latest }}'
+          $current = '${{ steps.get-current-version.outputs.current }}'
+          $update = $latest -ne $current
+          $updateStr = $update.ToString().ToLower()
+          echo "update=$updateStr" >> $env:GITHUB_OUTPUT
+
+      - name: Pack project
+        if: steps.compare-versions.outputs.update == 'true'
+        run: dotnet pack -c Release -o output
+        working-directory: ./Simple.Toast
+
+      - name: Push NuGet package
+        if: steps.compare-versions.outputs.update == 'true'
+        env:
+          NUGET_KEY: ${{ secrets.SIMPLE_TOAST_KEY }}
+        run: dotnet nuget push output/*.nupkg --api-key $env:NUGET_KEY --source https://api.nuget.org/v3/index.json
+        working-directory: ./Simple.Toast
