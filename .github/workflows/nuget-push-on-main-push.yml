@@ -8,28 +8,20 @@ on:
 permissions:
   contents: read
 
+env:
+  PACKAGE_ID: ${{ vars.PACKAGE_ID }}
+
 jobs:
   build-and-deploy:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      - name: Install MAUI workloads
-        run: |
-          dotnet workload install ios
-          dotnet workload install maccatalyst
-          dotnet workload install maui
-      
       - name: Get latest NuGet version
         id: get-latest-version
         shell: pwsh
         run: |
-          $queryUrl = "https://azuresearch-usnc.nuget.org/query?q=packageid:Simple.Toast&prerelease=true&semVerLevel=2.0.0"
+          $queryUrl = "https://azuresearch-usnc.nuget.org/query?q=packageid:$env:PACKAGE_ID&prerelease=true&semVerLevel=2.0.0"
           try {
             $response = Invoke-RestMethod -Uri $queryUrl -ErrorAction Stop
             if ($response.totalHits -gt 0) {
@@ -47,7 +39,7 @@ jobs:
         id: get-current-version
         shell: pwsh
         run: |
-          $csprojPath = './Simple.Toast/Simple.Toast.csproj'
+          $csprojPath = "./$env:PACKAGE_ID/$env:PACKAGE_ID.csproj"
           if (-not (Test-Path $csprojPath)) {
             Write-Error "File not found: $csprojPath"
             exit 1
@@ -71,11 +63,24 @@ jobs:
           $update = $env:LATEST -ne $env:CURRENT
           $updateStr = $update.ToString().ToLower()
           echo "update=$updateStr" >> $env:GITHUB_OUTPUT
+          
+      - name: Setup .NET
+        if: steps.compare-versions.outputs.update == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install MAUI workloads
+        if: steps.compare-versions.outputs.update == 'true'
+        run: |
+          dotnet workload install ios
+          dotnet workload install maccatalyst
+          dotnet workload install maui
 
       - name: Pack project
         if: steps.compare-versions.outputs.update == 'true'
         run: dotnet pack -c Release -o output
-        working-directory: ./Simple.Toast
+        working-directory: ./${{ env.PACKAGE_ID }}
 
       - name: Push NuGet package
         if: steps.compare-versions.outputs.update == 'true'
@@ -89,4 +94,4 @@ jobs:
             exit 1
           }
           dotnet nuget push $package.FullName --api-key $env:NUGET_KEY --source https://api.nuget.org/v3/index.json
-        working-directory: ./Simple.Toast
+        working-directory: ./${{ env.PACKAGE_ID }}
